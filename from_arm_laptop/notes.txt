@@ -1,0 +1,69 @@
+tr ' ' '\n' < INPUT | sort | uniq -c | sort -n > out1.txt
+./a INPUT | sort -n > out2.txt
+diff out*
+
+-DNDEBUG
+
+time measurement:
+https://www.youtube.com/watch?v=1KQqpiXxvWQ
+time program
+clock()
+times()
+clock_gettime()
+
+
+use mmap() to map file into memory: https://www.youtube.com/watch?v=m7E9piHcfr4
+
+getrusage()
+
+objdump -t
+
+#pragma pack(1)
+Marshall packets
+
+named pipes: https://www.youtube.com/watch?v=dhFkwGRSVGk
+
+shared objects: https://www.youtube.com/watch?v=JbHmin2Wtmc
+
+C unit testing: minunit
+http://pantras.free.fr/articles/minunit.html
+https://news.ycombinator.com/item?id=14293984
+https://github.com/siu/minunit
+http://www.jera.com/techinfo/jtns/jtn002.html
+
+for python, use Count module
+
+1. make functions return pointers to malloc'd structs:
+
+    Pros:
+        * function doesn't have to return a copy of the struct
+
+    Cons:
+        * increases amount of data on the heap; adds overhead to future allocations
+        * increases memory fragmentation as structs are freed
+        * if you wanted an instance of the struct on the stack, would need to write a separate
+          initializer function to set it up
+        * this also applies to a struct inside a struct; if struct A is always dynamically allocated,
+          then if struct B contains a struct A (not a pointer to a struct A), then there's no way to
+          initialize the struct A without a separate function; and it's preferable to have a struct A
+          instead of a pointer to struct A (in most cases?) because it takes up less space and it reduces
+          amount of pointer chasing
+
+2. make functions return structs:
+
+    Pros:
+        * (inverse of cons for 1)
+
+    Cons:
+        * function has to return a copy of the struct
+            (maybe not a big deal; the stack will have cache locality and copies can possibly be optimized away)
+
+3. make function accepts pointer to struct
+
+    Pros:
+        * maybe combines best of both?
+
+    Cons:
+        * only mmarginally beneficial over returning struct copy
+        * possibly more bug-prone; additional parameter
+
